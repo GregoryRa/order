@@ -27,6 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
+
 /**
  * Plugin install process
  *
@@ -76,6 +77,7 @@ function plugin_order_install() {
    return true;
 }
 
+
 /**
  * Plugin uninstall process
  *
@@ -104,6 +106,7 @@ function plugin_order_uninstall() {
    return true;
 }
 
+
 /* define dropdown tables to be manage in GLPI : */
 function plugin_order_getDropdown() {
    /* table => name */
@@ -122,6 +125,7 @@ function plugin_order_getDropdown() {
       return [];
    }
 }
+
 
 /* define dropdown relations */
 function plugin_order_getDatabaseRelations() {
@@ -151,7 +155,7 @@ function plugin_order_getDatabaseRelations() {
             "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
             "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
          ],
-         "glpi_entities" =>[
+         "glpi_entities" => [
             "glpi_plugin_order_orders"    => "entities_id",
            "glpi_plugin_order_references" => "entities_id",
            "glpi_plugin_order_others"     => "entities_id",
@@ -187,6 +191,7 @@ function plugin_order_getDatabaseRelations() {
    }
 }
 
+
 ////// SEARCH FUNCTIONS ///////(){
 
 // Define search option for types of the plugins
@@ -210,13 +215,14 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3161]['field']         = 'num_order';
          $sopt[3161]['linkfield']     = '';
          $sopt[3161]['name']          = __("Order number", "order");
-         $sopt[3161]['forcegroupby']  =  true;
+         $sopt[3161]['forcegroupby']  = true;
          $sopt[3161]['datatype']      = 'itemlink';
          $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
       }
    }
    return $sopt;
 }
+
 
 function plugin_order_addSelect($type, $ID, $num) {
    $searchopt = &Search::getOptions($type);
@@ -231,6 +237,7 @@ function plugin_order_addSelect($type, $ID, $num) {
    }
 }
 
+
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield, &$already_link_tables) {
    $out = "";
    switch ($new_table) {
@@ -238,7 +245,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield, &$alre
          $out = " LEFT JOIN `glpi_plugin_order_orders_items`
                      ON `$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id`
                      AND `glpi_plugin_order_orders_items`.`itemtype` = '$type' ";
-         $out.= " LEFT JOIN `glpi_plugin_order_orders`
+         $out .= " LEFT JOIN `glpi_plugin_order_orders`
                      ON `glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id` ";
          break;
       case "glpi_budgets": // From order list
@@ -254,6 +261,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield, &$alre
    return $out;
 }
 
+
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
    global $CFG_GLPI;
@@ -263,9 +271,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $field     = $searchopt[$ID]["field"];
    $reference = new PluginOrderReference();
    $itemnum   = $data['raw']["ITEM_".$num];
-   $itemtype  = isset($data['raw']["itemtype"])
-                  ? $data['raw']["itemtype"]
-                  : "";
+   $itemtype  = isset($data['raw']["itemtype"]) ? $data['raw']["itemtype"] : "";
 
    switch ($table.'.'.$field) {
       /* display associated items with order */
@@ -301,6 +307,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    return "";
 }
 
+
 function plugin_order_displayConfigItem($type, $ID, $data, $num) {
    global $CFG_GLPI;
 
@@ -313,13 +320,14 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num) {
          if ($data['raw']["ITEM_".$num]) {
             $config = PluginOrderConfig::getConfig();
             if ($config->getShouldBeDevileredColor() != '') {
-               $message.= " style=\"background-color:".$config->getShouldBeDevileredColor().";\" ";
+               $message .= " style=\"background-color:".$config->getShouldBeDevileredColor().";\" ";
             }
          }
          return $message;
 
    }
 }
+
 
 /* hook done on purge item case */
 function plugin_item_purge_order($item) {
@@ -332,6 +340,7 @@ function plugin_item_purge_order($item) {
 
    return true;
 }
+
 
 /**
  * Get itemtypes to migration from GLPI 0.72 to GLPI 0.78+
@@ -346,11 +355,13 @@ function plugin_order_migratetypes($types) {
    return $types;
 }
 
+
 function plugin_datainjection_populate_order() {
    global $INJECTABLE_TYPES;
    $INJECTABLE_TYPES['PluginOrderOrderInjection']     = 'order';
    $INJECTABLE_TYPES['PluginOrderReferenceInjection'] = 'order';
 }
+
 
 function plugin_order_AssignToTicket($types) {
    if (Session::haveRight("plugin_order_order", PluginOrderOrder::RIGHT_OPENTICKET)) {
